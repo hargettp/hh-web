@@ -38,9 +38,7 @@
 
   'service-client
 
-
-  )
- )
+  ))
 
 ;;;------------------------------------------------------------------------------------
 ;;; Constants
@@ -50,14 +48,11 @@
   "Special parameter used in POST requests to indicate the actual desired
   method (should be either 'DELETE' or 'PUT').  Used by some browser-side
   code as a substitute for situations where the browser will not allow Javascript
-  to send a native DELETE or PUT request."
-  )
+  to send a native DELETE or PUT request.")
 
 (defvar +meta-service-request-parameter+ "_meta"
   "When this parameter appears for a service, the service will perform other 'meta'
-   activities for the service.  See handle-service-meta-request.
-  "
-)
+   activities for the service.  See handle-service-meta-request.")
 
 ;; common values for +meta-serivce-request-parameter+
 (defvar +client-meta-service-request+ "client")
@@ -82,31 +77,19 @@
    should be a list of variable/parameter combinations, where each combination in the list
    is of the form (variable parameter).  The parameter name should be a string, the variable
    should be a symbol referenced in the body."
-  `(let (
-	 ,@(mapcar (lambda (variable-parameter) 
+  `(let (,@(mapcar (lambda (variable-parameter) 
 		     (destructuring-bind (variable parameter)
 			 variable-parameter
-		     `(,variable (hunchentoot:parameter ,parameter))
-		       )
-		    )
-		  parameter-list)
-	 )
-     (let (
-	   (result (progn ,@body))
-	   )
+		     `(,variable (hunchentoot:parameter ,parameter))))
+		  parameter-list))
+     (let ((result (progn ,@body)))
        (log5:log-for (log5:trace) "With-http-parameters result is ~s~%" result)
-       result
-     )
-     )
-  )
+       result)))
 
 (defun meta-service-request-p (&optional (hunchentoot:*request* hunchentoot:*request*) )
   "If there is a _meta parameter present, then regard the request as a 'meta' request
    by returning t; otherwise return nil"
-  (when (hunchentoot:parameter +meta-service-request-parameter+ hunchentoot:*request*)
-    t
-    )
-  )
+  (when (hunchentoot:parameter +meta-service-request-parameter+ hunchentoot:*request*) t))
 
 ;;;------------------------------------------------------------------------------------
 ;;; Request methods
@@ -118,34 +101,23 @@
 ;;;------------------------------------------------------------------------------------
 
 (defun http-get-p (&optional (hunchentoot:*request* hunchentoot:*request*) )
-  (eql :get (hunchentoot:request-method hunchentoot:*request*) )
-  )
+  (eql :get (hunchentoot:request-method hunchentoot:*request*) ))
 
 (defun http-post-p (&optional (hunchentoot:*request* hunchentoot:*request*) )
   (and (eql :post (hunchentoot:request-method hunchentoot:*request*) )
-       (not (hunchentoot:parameter +method-parameter+ hunchentoot:*request*) )
-       )
-  )
+       (not (hunchentoot:parameter +method-parameter+ hunchentoot:*request*) )))
 
 (defun http-put-p (&optional (hunchentoot:*request* hunchentoot:*request*) )
   (or (eql :put (hunchentoot:request-method hunchentoot:*request*) )
       (and (eql :post (hunchentoot:request-method hunchentoot:*request*) )
 	   (equal (string-downcase (hunchentoot:parameter +method-parameter+ hunchentoot:*request*) )
-		  "put"
-		  )
-	   )
-      )
-  )
+		  "put"))))
 
 (defun http-delete-p (&optional (hunchentoot:*request* hunchentoot:*request*) )
   (or (eql :delete (hunchentoot:request-method hunchentoot:*request*) )
       (and (eql :post (hunchentoot:request-method hunchentoot:*request*) )
 	   (equal (string-downcase (hunchentoot:parameter +method-parameter+ hunchentoot:*request*) )
-		  "delete"
-		  )
-	   )
-      )
-  )
+		  "delete"))))
 
 ;;;------------------------------------------------------------------------------------
 ;;; Generic functions
@@ -166,53 +138,39 @@
      form - returns an HTML page with both the documentation string for the
        service, but also a form suitable for entering parameters and then
        invoking the service, as well as displaying (and changing?) values
-       of involved cookies before and after the invocation.
-   "
-		  )
-  )
+       of involved cookies before and after the invocation."))
 
 (defgeneric generate-service-client-script (service-name)
   (:documentation "Return a string of client-side Javascript sufficient for calling all
-   methods of the service")
-)
+   methods of the service"))
 
 (defgeneric service-documentation-string (service-name)
-  (:documentation "Return the documentation string provided with the service definition")
-  )
+  (:documentation "Return the documentation string provided with the service definition"))
 
 (defgeneric service-args (service-name)
   (:documentation "Return a list of symbols identifying the arguments a service expects.  All
-    methods of a service share the same arguments."
-		  )
-)
+    methods of a service share the same arguments."))
 
 (defgeneric service-methods (service-name)
-  (:documentation "Return as a list the symbolic names of methods supported by the service")
-  )
+  (:documentation "Return as a list the symbolic names of methods supported by the service"))
 
 (defgeneric service-method-documentation-string (service-name method-name)
-  (:documentation "Return the documentation string provided with the method definition")
-  )
+  (:documentation "Return the documentation string provided with the method definition"))
 
 (defgeneric service-method-http-method (service-name method-name)
-  (:documentation "Return the HTTP method expected for this service method")
-  )
+  (:documentation "Return the HTTP method expected for this service method"))
 
 (defgeneric service-method-test (service-name method-name)
-  (:documentation "Return the test expected for this service method")
-  )
+  (:documentation "Return the test expected for this service method"))
 
 (defgeneric service-method-cookies (service-name method-name)
-  (:documentation "Return the cookies touched by a service method")
-  )
+  (:documentation "Return the cookies touched by a service method"))
 
 (defgeneric service-method-args (service-name method-name)
-  (:documentation "Return the argument list (derived from URL path component,typically) for a service")
-  )
+  (:documentation "Return the argument list (derived from URL path component,typically) for a service"))
 
 (defgeneric service-method-parameters (service-name method-name)
-  (:documentation "Return the parameter list for a service method")
-  )
+  (:documentation "Return the parameter list for a service method"))
 
 ;;;------------------------------------------------------------------------------------
 ;;; Defining services
@@ -222,66 +180,43 @@
 
 (defmethod handle-service-meta-request ( (service-name symbol)  (meta (eql nil) ) &optional (hunchentoot:*request* nil) )
   "Default handling of service meta requests--"
-  (let (
-	(meta-request (string-downcase (hunchentoot:parameter +meta-service-request-parameter+ hunchentoot:*request*)) )
-	)
+  (let ((meta-request (string-downcase (hunchentoot:parameter +meta-service-request-parameter+ hunchentoot:*request*)) ))
     (log5:log-for (log5:info) "Handling meta request ~s for service ~s~%" meta-request service-name)
     (cond
       ((string-equal meta-request "client") ;; return client script
-       (handle-service-meta-request service-name :client hunchentoot:*request*)
-       )
+       (handle-service-meta-request service-name :client hunchentoot:*request*))
       ((string-equal meta-request "form") ;; return form for entering parameters
-       (handle-service-meta-request service-name :form hunchentoot:*request*)
-       )
+       (handle-service-meta-request service-name :form hunchentoot:*request*))
       (t
        (setf (hunchentoot:return-code*) hunchentoot:+http-bad-request+)
-       ""
-       )
-      )
-    )
-  )
+       ""))))
 
 (defmethod handle-service-meta-request ( (service-name symbol) (meta (eql :client) ) &optional hunchentoot:*request*)
   "Return the client script for the service"
   (setf (hunchentoot:content-type*) "text/javascript")
-  (generate-service-client-script service-name (hunchentoot:script-name hunchentoot:*request*))
-  )
+  (generate-service-client-script service-name (hunchentoot:script-name hunchentoot:*request*)))
 
+;; TODO fix service form user interface
+;; (service-form service-name)
 (defmethod handle-service-meta-request ( (service-name symbol) (meta (eql :form) ) &optional hunchentoot:*request*)
-  "Return the form for entering service parameters manually"
-  ;; TODO fix service form user interface
-  ;; (service-form service-name)
-  )
+  "Return the form for entering service parameters manually")
 
 (defun ps-service-method-parameter-list (parameter-list)
   "Helper for processing service parameter lists during script generation"
   (when parameter-list
     (destructuring-bind (var parm) (car parameter-list) 
-      ;; (append (list parm `(encode-u-r-i-component ,var) )
       (append (list parm var )
-	      (ps-service-method-parameter-list (cdr parameter-list) )
-	      )
-      )
-    )
-  )
+	      (ps-service-method-parameter-list (cdr parameter-list) )))))
 
 (defun ps-service-method-client-script (method-name service-args parameters http-method)
-  (let (
-	(effective-http-method (if (or (eql http-method :put)
-				       (eql http-method :delete)
-				       )
+  (let ((effective-http-method (if (or (eql http-method :put)
+				       (eql http-method :delete))
 				   :post
-				   http-method
-				   )
-	  )
+				   http-method))
 	(method-parameter (if (or (eql http-method :put)
-				  (eql http-method :delete)
-				  )
+				  (eql http-method :delete))
 			      `(,+method-parameter+ ,http-method)
-			      nil
-			      )
-	  )
-	)
+			      nil)))
     `(defun ,method-name (service-url ,@(mapcar #'car parameters) success error)
        (ps:new (  (ps:@ j-query ajax)	;j-query.ajax
 		  (ps:create
@@ -290,18 +225,9 @@
 		   ,@(when (or parameters method-parameter)
 			   `(data (ps:create
 				   ,@method-parameter
-				   ,@(ps-service-method-parameter-list parameters)
-				   )
-				  )
-			   )
+				   ,@(ps-service-method-parameter-list parameters))))
 		   success success
-		   error error
-		   )
-		  )
-	       )
-       )
-    )
-  )
+		   error error))))))
 
 ;; ------------------------- Macros --------------------------------------------------- 
 
@@ -330,54 +256,37 @@
 					  ((:http-method http-method) :get)
 					  ((:if test) t)
 					  ((:cookies cookies) nil)
-					  ((:parameters parameters) nil)
-					  )
+					  ((:parameters parameters) nil))
 			 def
 		       (declare (ignorable documentation http-method test cookies parameters) )
-		       ,@work
-		       )
-		     )
-		   (error "Service method definition must start with :method")
-		   )
-	       )
-	     ,method-defs
-	     )
-    )
-  ) 
+		       ,@work))
+		   (error "Service method definition must start with :method")))
+	     ,method-defs))) 
 
-(defmacro defservice (
-		      name
-		      (
-		       &key
+(defmacro defservice (name
+		      (&key
 		       ((:documentation documentation) nil)
-		       ((:args service-args) nil) 
-					; If present, args appear as the parameter lists of methods in client script
-					; and are used to construct the path of the request.  The intent is
-					; to enable passing of args from the client through the URL
-					; and also to have named registers from the pattern
-					; registered for the service available as well
-		       )
+		       ((:args service-args) nil))
 		      &rest
-		      methods
-		      )
+		      methods)
   "Defines a service with the specified name, optional documentation, optional args and keyword args 
-    (typically extracted from the URL associated with the service), and a set of methods.  
-    "
+   (typically extracted from the URL associated with the service), and a set of methods.  
+
+If present, args appear as the parameter lists of methods in client script
+and are used to construct the path of the request.  The intent is
+to enable passing of args from the client through the URL
+and also to have named registers from the pattern
+registered for the service available as well"
   `(progn
 
      (export 
       (list 
-       (quote ,name) 
-       )
-      )
+       (quote ,name)))
 
      (export
-      (quote ,service-args)
-      )
+      (quote ,service-args))
 
-     (defmethod generate-service-client-script (
-						(service-name (eql (quote ,name)) )
-						)
+     (defmethod generate-service-client-script ((service-name (eql (quote ,name)) ))
        (with-output-to-string (os)
 	 ,@(map-service-method-defs 
 	    (methods)
@@ -385,82 +294,50 @@
 		     (ps:ps* (ps-service-method-client-script (quote ,method-name)
 							      (quote ,service-args )
 							      (quote ,parameters )
-							      ,http-method
-							      )
-			     )
-		     )
-	    )
-	 )
-       )
+							      ,http-method))))))
      
      (defmethod service-documentation-string ( (service-name (eql (quote ,name)) ) )
-       (quote ,documentation)
-       )
+       (quote ,documentation))
 
      (defmethod service-methods ( (service-name (eql (quote ,name)) ) )
        (quote ,(map-service-method-defs (methods)
-					method-name
-					)
-	      )
-       )
+					method-name)))
 
      (defmethod service-args ( (service-name (eql (quote ,name)) ) )
-       (quote ,service-args)
-       )
+       (quote ,service-args))
 
      ,@(map-service-method-defs (methods)
 				`(defmethod service-method-documentation-string ( (service-name (eql (quote ,name)) ) (method-name (eql (quote ,method-name)) ) )
-				   ,documentation
-				   )
-				)
+				   ,documentation))
 
      ,@(map-service-method-defs (methods)
 				`(defmethod service-method-http-method ( (service-name (eql (quote ,name)) ) (method-name (eql (quote ,method-name)) ) )
-				   (quote ,http-method)
-				   )
-				)
+				   (quote ,http-method)))
 
      ,@(map-service-method-defs (methods)
 				`(defmethod service-method-test ( (service-name (eql (quote ,name)) ) (method-name (eql (quote ,method-name)) ) )
-				   (quote ,test)
-				   )
-				)
+				   (quote ,test)))
 
      ,@(map-service-method-defs (methods)
 				`(defmethod service-method-cookies ( (service-name (eql (quote ,name)) ) (method-name (eql (quote ,method-name)) ) )
-				   (quote ,cookies)
-				   )
-				)
+				   (quote ,cookies)))
 
      ,@(map-service-method-defs (methods)
 				`(defmethod service-method-parameters ( (service-name (eql (quote ,name)) ) (method-name (eql (quote ,method-name)) ) )
-				   (quote ,parameters)
-				   )
-				)
+				   (quote ,parameters)))
 
      ,@(map-service-method-defs (methods)
 				`(export
 				  (list 
 				   ,@(loop for parameter in (mapcar #'car parameters ) 
-					collect `(quote ,parameter)
-					)
-				   )
-				  )
-				)
+					collect `(quote ,parameter)))))))
 
-     )
-  )
+(defmacro defservice-client (service-name)
 
-(defmacro defservice-client (
-			     service-name
-			     )
   `(progn
-
      ,@(loop for method-name in (service-methods service-name )
-	  collect (let (
-			(parameters (service-method-parameters service-name method-name))
-			(local-method-name (intern (symbol-name method-name) *package*) )
-			)
+	  collect (let ((parameters (service-method-parameters service-name method-name))
+			(local-method-name (intern (symbol-name method-name) *package*) ))
 		    `(defun ,local-method-name (service-url ,@(mapcar #'car parameters) )
 			 (drakma:http-request service-url
 					      :method ,(service-method-http-method service-name method-name)
@@ -468,26 +345,13 @@
 						      `(:parameters (list
 								     ,@(loop for param in parameters
 									  ;; query string parameter name first, in this case
-									  collect `(cons ,(cadr param) ,(car param))
-									  )
-								     )
-								    )
-						      )
-					      )
-			 )
-		    )
-	  )
-     )
-  )
+									  collect `(cons ,(cadr param) ,(car param))))))))))))
 
-(defmacro map-service-method-handlers ( 
-				       (service-name method-handlers)
+(defmacro map-service-method-handlers ((service-name method-handlers)
 				       &rest
-				       work
-				       )
+				       work)
   "Each method handler should have the following form:
-     (:method method-name &rest method-handler-body)
-  "
+     (:method method-name &rest method-handler-body)"
   (when method-handlers
     `(mapcar (lambda (method-handler)
 	       (if (eql :method (car method-handler) )
@@ -498,42 +362,27 @@
 			    (http-method (service-method-http-method ,service-name method-name) )
 			    (cookies (service-method-cookies ,service-name method-name) )
 			    (parameters (service-method-parameters ,service-name method-name) )
-			    (test (service-method-test ,service-name method-name) )
-			    )
+			    (test (service-method-test ,service-name method-name) ))
 		       (declare (ignorable http-method cookies parameters test) )
-		       ,@work
-		       )
-		     )
-		   (error "Method handler must start with :method")
-		   )
-	       )
-	     ,method-handlers
-	     )
-    )
-  )
+		       ,@work))
+		   (error "Method handler must start with :method")))
+	     ,method-handlers)))
   
 
-(defmacro defservice-handler (
-			      service-name
+(defmacro defservice-handler (service-name
 			      &rest
-			      method-handlers
-			      )
-  (let (
-	(local-service-name (intern (symbol-name service-name)) )
-	(service-args (service-args service-name))
-	)
+			      method-handlers)
+  (let ((local-service-name (intern (symbol-name service-name)) )
+	(service-args (service-args service-name)))
     `(progn
 
-       (defun ,local-service-name ( 
-		     ,@service-args 
-		     &optional 
-		     (hunchentoot:*request* hunchentoot:*request*)
-		     )
+       (defun ,local-service-name 
+	   (,@service-args 
+	    &optional 
+	      (hunchentoot:*request* hunchentoot:*request*))
 	 ,(service-documentation-string service-name)
-	 (let (
-	       (service-name (quote ,service-name) )
-	       )
-	   (cond 
+	 (let ((service-name (quote ,service-name) )
+	       ) (cond 
 	     ( (meta-service-request-p hunchentoot:*request*) (handle-service-meta-request service-name nil hunchentoot:*request*) )
 	     ,@(map-service-method-handlers (service-name method-handlers)
 					 `( (and ,(cond
@@ -541,33 +390,18 @@
 						   ( (eql http-method :put) '(http-put-p))
 						   ( (eql http-method :delete) '(http-delete-p))
 						   ( (eql http-method :post) '(http-post-p))
-						   ( t nil)
-						   ) 
-						 ,test
-						 )
+						   ( t nil)) 
+						 ,test)
 					    (log5:log-for (log5:info) "Executing method ~a for ~a" (quote ,method-name) service-name )
 					    (with-cookies (,@cookies)
 					      (with-http-parameters (,@parameters)
-						,@method-handler-body
-						)
-					      )
-					    )
-					 )
+						,@method-handler-body))))
 	     ( t 
 	      (log5:log-for (log5:warn log5:info) "Could not dispatch ~a for service ~a" (hunchentoot:script-name hunchentoot:*request*) service-name )
 	      (setf (hunchentoot:return-code*) hunchentoot:+http-bad-request+) 
-	      ""
-	      )
-	     )
-	   )
-	 )
-       )
-    )
-  )
+	      "")))))))
   
 (defmacro service-client (service-name)
   `(progn
      (setf (hunchentoot:content-type*) "text/javascript")
-     (generate-service-client-script (quote ,service-name))
-     )
-  )
+     (generate-service-client-script (quote ,service-name))))

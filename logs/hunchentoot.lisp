@@ -69,5 +69,4 @@ NIL in which case it is ignored."
 		(hunchentoot::iso-time) 
 		log-level
 		format-string 
-		format-arguments
-		))
+		format-arguments))

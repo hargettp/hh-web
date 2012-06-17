@@ -32,135 +32,87 @@
 (defgeneric cookie-key (cookie)
   (:documentation
     "
-    "
-    )
+    ")
   (:method ((cookie symbol))
-    (symbol-name cookie)
-    )
-  )
+    (symbol-name cookie)))
 
 (defgeneric cookie-variable (cookie)
   (:documentation
     "
-    "
-    )
+    ")
   (:method ((cookie symbol))
     (intern (format-string "*~a*" (symbol-name cookie))
-            (symbol-package cookie)
-            )
-    )
-  )
+            (symbol-package cookie))))
 
 (defgeneric cookie-expiry-date (cookie)
   (:documentation
     "
-    "
-    )
+    ")
   (:method ((cookie t))
-    (+ (get-universal-time) (* 60 60 24)) ; defaults to lasting a day
-    )
-  )
+    ;; defaults to lasting a day
+    (+ (get-universal-time) (* 60 60 24)))) 
 
 (defgeneric get-cookie-value (cookie)
   (:documentation
-    "Obtain cookie value from current hunchentoot:*request*
-    ")
+    "Obtain cookie value from current hunchentoot:*request*")
   (:method ((cookie t))
     (hunchentoot:url-decode
        (hunchentoot:url-decode 
-        (hunchentoot:cookie-in (cookie-key cookie))
-        ))))
+        (hunchentoot:cookie-in (cookie-key cookie))))))
 
 (defgeneric set-cookie-value (cookie value)
   (:documentation
-   "Set cookie value in current hunchentoot:*reply*
-    "
-   )
+   "Set cookie value in current hunchentoot:*reply*")
   (:method ((cookie t) value)
     (log5:log-for (log5:info) "Adding cookie ~s with value ~s"
 			     (cookie-key cookie)
 			     (if value 
 				 ;(hunchentoot:url-encode value)
 				 value
-				 ""
-				 )
-			     )
+				 ""))
     (hunchentoot:set-cookie (cookie-key cookie)
 			    :value (if value 
 				       ;(hunchentoot:url-encode value)
 				       value
-				       ""
-				       )
+				       "")
 			    :path "/"
 					; :domain realm-name
 			    :expires (if value
 					 (cookie-expiry-date cookie)
-					 1 ; automatically expired
-					 ) 
-					; :secure t
-			    )
-    )
-  )
+					 ; automatically expired
+					 1))))
 
-(defmacro defcookie (
-                     name
+(defmacro defcookie (name
                      key
                      var
                      expiry-period ; expiry in seconds
 		     &optional
-		     (export nil)
-                     )
+		     (export nil))
   `(progn
      (defvar ,var)
      (defmethod cookie-key ((cookie (eql (quote ,name))))
-       ,key
-       )
+       ,key)
      (defmethod cookie-variable ((cookie (eql (quote ,name))))
-       (quote ,var)
-       )
+       (quote ,var))
      (defmethod cookie-expiry-date ((cookie (eql (quote ,name))))
-       (+ (get-universal-time) ,expiry-period)
-       )
+       (+ (get-universal-time) ,expiry-period))
 
      ,(when export
 	    `(export (list
 		      (quote ,name)
-		      (quote ,var)
-		      )
-		     )
-	    )
-     )
-  )
+		      (quote ,var))))))
 
 (defmacro with-cookies (&optional (cookies nil) &rest body)
-  (let (
-        (cookie-in-list (if cookies 
+  (let ((cookie-in-list (if cookies 
 			    (mapcar (lambda (c)
-				      `(,(cookie-variable c) (get-cookie-value (quote ,c)))                                                  
-				      )
-				    cookies
-				    )
-                            )
-	  )
+				      `(,(cookie-variable c) (get-cookie-value (quote ,c))))
+				    cookies)))
         (cookie-out-list (if cookies 
 			     (mapcar (lambda (c)
-				       `(set-cookie-value (quote ,c) ,(cookie-variable c))                                                  
-				       )
-				     cookies
-				     )
-                             )
-	  )
-	)
-    `(let (
-	   ,@cookie-in-list
-	   )
-       (let (
-	     (result (progn ,@body ) )
-	     )
+				       `(set-cookie-value (quote ,c) ,(cookie-variable c)))
+				     cookies))))
+    `(let (,@cookie-in-list)
+       (let ((result (progn ,@body ) ))
 	 ,@cookie-out-list
 	 (log5:log-for (log5:trace) "With-cookies result is ~s~%" result)
-	 result
-	 )
-       )
-    )
-  )
+	 result))))

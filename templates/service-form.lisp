@@ -25,5 +25,4 @@
 
 (page 
  (+title (format nil " Service - ~a" service-name) )
- (view-service-description (+@ :service-name service-name) )
- )
+ (view-service-description (+@ :service-name service-name) ))

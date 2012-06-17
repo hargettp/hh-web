@@ -28,9 +28,7 @@
 
 (defmacro format-string (format-control-string &rest args)
   `(with-output-to-string (os)
-     (format os ,format-control-string ,@args)
-     )
-  )
+     (format os ,format-control-string ,@args)))
 
 (defun string-starts-with (target-string search-string)
   "
@@ -40,10 +38,7 @@
   (if (> (length search-string) (length target-string))
       nil
       (equal (subseq target-string 0 (length search-string)) 
-             search-string
-             )    
-      )
-  )
+             search-string)))
 
 (defun tokenize (token-string token &optional (start-pos 0) )
   "Break a token-string into a list, where each element is
@@ -54,55 +49,35 @@
             (if (> pos 0)
                 (cons 
                  (subseq token-string start-pos pos)
-                 (tokenize token-string token (+ pos (length token)))
-                 )
-                (tokenize token-string token 1)
-                )
-            (list (subseq token-string start-pos))
-            )
-        )
-      (list)
-      )
-  )
+                 (tokenize token-string token (+ pos (length token))))
+                (tokenize token-string token 1))
+            (list (subseq token-string start-pos))))
+      (list)))
 
 (defun detokenize (elements token &optional (prefix ""))
   "Combine elements into a string, separating each element by token"
-  (let ( 
-        (car-element (car elements))
-        (cdr-elements (cdr elements))
-        )
+  (let ((car-element (car elements))
+        (cdr-elements (cdr elements)))
     (if cdr-elements
         (concatenate 'string car-element token
                      (detokenize 
                       cdr-elements 
                       token
-                      prefix 
-                      )
-                     )
-        car-element
-        )
-    )
-  )
+                      prefix))
+        car-element)))
 
 (defun string-to-bytes (a-string &key (pad-to 1))
   "Borrowed from Arnesi (http://common-lisp.net/project/bese/arnesi.html)"
-  (let ( 
-        (padded-length (* pad-to (ceiling (length a-string) pad-to)))
-        )
+  (let ((padded-length (* pad-to (ceiling (length a-string) pad-to))))
     (map-into (make-array padded-length :element-type '(unsigned-byte 8))
               #'char-code 
-              a-string
-              )
-    )
-  )
+              a-string)))
   
 (defun bytes-to-string (some-bytes)
   "Borrowed from Arnesi (http://common-lisp.net/project/bese/arnesi.html)"
   (map-into (make-array (length some-bytes) :element-type 'character)
             #'code-char 
-            some-bytes
-            )
-  )
+            some-bytes))
 
 ;; collections
 
@@ -115,15 +90,9 @@
      (lambda (v)
        (if (funcall a-test v)
            (setf results 
-		 (append results (list v)) 
-		 )
-           )
-       ) 
-     some-list
-     )  
-    results
-    )
-  )
+		 (append results (list v))))) 
+     some-list)  
+    results))
 
 (defmacro putend (some-object some-place)
   "Append some-object to the end of the list in some-place.
@@ -131,55 +100,38 @@
    "
   `(setf ,some-place
          (nconc ,some-place
-                 (list ,some-object)
-                 )
-         )
-  )
+                 (list ,some-object))))
 
 (defmacro putendnew (some-object some-place
 		     &key 
 		     ((:test test) 'equal)
 		     )
   `(if (not (member ,some-object ,some-place :test ,test) )
-       (putend ,some-object ,some-place)
-       )
-  )
+       (putend ,some-object ,some-place)))
 
 (defmacro union-ordered (some-list some-place)
   `(dolist (item ,some-list)
      (putendnew item
 		,some-place
-		:test 'equal
-		)
-     )
-  )
+		:test 'equal)))
 
 ;; hashtables
 
 (defun hash-contents (some-hash)
-  (let ( 
-        (contents nil)
-        )
+  (let ((contents nil))
     (maphash 
      (lambda (k v)
        (declare (ignorable k))
-       (setq contents (cons v contents)) 
-       )
-     some-hash
-     )
-    contents
-    )
-  )
+       (setq contents (cons v contents)))
+     some-hash)
+    contents))
 
 ;; UUIDs
 
 (defun uuid-string ()
   (string-trim '(#\Space #\NewLine #\Tab)
                                      (with-output-to-string (os)
-                                       (print (uuid:make-v4-uuid) os)
-                                       )
-                                     )
-  )
+                                       (print (uuid:make-v4-uuid) os))))
 
 (defun generate-long-uuid-string (size)
   "Utility function for generating long strings of 
@@ -188,24 +140,14 @@
   (cl-base64:string-to-base64-string 
    (with-output-to-string (os) 
      (dotimes (i size)
-       (print (uuid:make-v4-uuid) os) 
-       )
-     )
-   )
-  )
+       (print (uuid:make-v4-uuid) os)))))
 
 (defun generate-base32-uuid-string ()
-  (let ( 
-        (uuid-bytes (uuid:uuid-to-byte-array (uuid:make-v4-uuid)))
+  (let ((uuid-bytes (uuid:uuid-to-byte-array (uuid:make-v4-uuid)))
         (rand-value (random #x100000000))
-        (bytes (make-array '(20) :element-type '(unsigned-byte 8))) 
-        )
+        (bytes (make-array '(20) :element-type '(unsigned-byte 8))))
     (dotimes (i 16)
-      (setf (aref bytes i) (aref uuid-bytes i))
-      )
+      (setf (aref bytes i) (aref uuid-bytes i)))
     (dotimes (i 4)
-      (setf (aref bytes (+ 16 i)) (ldb (byte 8 (* i 8)) rand-value))
-      )
-    (bytes-to-base32 bytes)
-    )
-  )
+      (setf (aref bytes (+ 16 i)) (ldb (byte 8 (* i 8)) rand-value)))
+    (bytes-to-base32 bytes)))

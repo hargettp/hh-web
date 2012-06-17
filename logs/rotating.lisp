@@ -36,17 +36,14 @@
    :initform (* 24 60 60) ;; daily
    :initarg :interval 
    :accessor log-interval
-   :documentation "Interval in seconds between log rotations"
-   )
+   :documentation "Interval in seconds between log rotations")
    (last-write
     :initform (get-universal-time)
-    :accessor last-write
-    )
+    :accessor last-write)
    (maxlogs
     :initform 10
     :initarg :max
-    :accessor maxlogs
-    ))
+    :accessor maxlogs))
   (:documentation "A variation of stream sender that rotates logs based on a configurable
    interval.  Log rotation happens just before a message is logged."))
 
@@ -55,16 +52,13 @@
       file-name
       (make-pathname :directory (pathname-directory file-name)
 		     :name (format nil "~a.~a" (pathname-name file-name) number)
-		     :type (pathname-type file-name)
-		     )
-      ))
+		     :type (pathname-type file-name))))
 
 (defun next-log-file-name (log-file-name max)
   (loop for i from 1 to max
      for new-name = (numbered-file-name log-file-name i)
      for exists = (probe-file new-name)
-     when (not exists ) return (values new-name exists)
-     ))
+     when (not exists ) return (values new-name exists)))
 
 (defgeneric log-interval-expired-p ( sender )
   (:documentation "Return true if it's time to rotate the sender's logs")

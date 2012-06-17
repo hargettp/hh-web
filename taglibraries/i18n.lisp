@@ -25,9 +25,7 @@
 (+tag-library :standard)
 
 (defhtmltag standard-locale-service 
-    :script-libraries `(
-			"/meta/clients/locales.js"
-			)
+    :script-libraries `("/meta/clients/locales.js")
     :content (list 
 	      (var 'locale-package *locale-package*)
 	      (var 'locale-service-url "/meta/services/locales")))

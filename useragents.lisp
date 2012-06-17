@@ -55,8 +55,7 @@
 	       (user-agent-string :opera "Opera")
 	       (user-agent-string :webkit "WebKit")
 	       (user-agent-string :safari "Safari")
-	       (user-agent-string :slurp "Yahoo! Slurp")
-	       )
+	       (user-agent-string :slurp "Yahoo! Slurp"))
     new-user-agent-strings))
 
 (defvar *enabled-user-agents* ())

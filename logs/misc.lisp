@@ -28,19 +28,11 @@
 ;;;------------------------------------------------------------------------------------
 
 (defmacro use-backtrace-logging (&rest body)
-  `(handler-bind (
-                  (error #'(lambda (e)
+  `(handler-bind ((error #'(lambda (e)
                              (declare (ignorable e))
 			     (log5:log-for (log5:error stack-trace) 
 					   "~a~%"
 					   (with-output-to-string (os)
-					     (sb-debug:backtrace most-positive-fixnum os)
-					     )
-					   )
-			     (signal e)
-                             )
-		    )
-                  )
-     ,@body
-     )
-  )
+					     (sb-debug:backtrace most-positive-fixnum os)))
+			     (signal e))))
+     ,@body))
