@@ -1,5 +1,6 @@
 .hg/
 .hgignore
 .emacs.desktop
+.emacs.desktop.lock
 
 *~
