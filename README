@@ -1,0 +1,36 @@
+About HH-Web
+
+HH-Web is the beginnings of a web application framework written in Lisp designed to streamline development of modern web applications.
+
+See the LICENSE file for the license covering all code within the HH-Web directory and any subdirectories.  
+Basically, it's the MIT license, so you are free to do what you want, provided you reproduce the original copyright.
+
+For more details, please refer to http://haphazardhouse.net/projects/hh-web.
+
+* Features *
+
+In its present form (as of August 2010), there are 4 principle features in hh-web:
+
+  * Custom tags: HH-Web, through the hh-web-tags package,  let's the developer write a web page using conventional
+  Lisp s-expression syntax, completely with properly generated CSS & Javascript.  More importantly, commonly used 
+  fragments of HTML/CSS/Javascript can be bundled as a tag (just like HTML tags such as p, div, h1, etc.), and the 
+  corresponding HTML/CSS/Javascript for the expected fragment will be generated instead.  Using custom tags means 
+  that most of the development of a new site involves the common elements that make up the pages, creating custom 
+  tags (with parameters or "attributes", when necessary), and then authoring the pages as templates using both HTML 
+  tags and the site-specific custom tags.
+
+  * Regex-based URL dispatching: Inspired by Django's use of regex dispatching, HH-Web implements a similar technique, 
+  but in Lisp.  Most importantly, if the regex contains "variables" (e.g., named registers, in regex parlance), then
+  symbols will be interned for those variables and exposed as parameters to the URL's handler.  Thus, components
+  of an URL's path will automatically be extracted and made available as arguments to the handling code.
+
+  * Dynamic code reloading: While not implemented for every aspect of hh-web (e.g., URLs), for tags and templates, changes
+  in the underlying code is by default automatically reflected the next time the page is refreshed in the browser.  The intent
+  is to provide the equivalent usability of other web authoring environments such as PHP or ASP: change the code for a page,
+  and reflect that immediately in the browser.
+
+  * Integrated caching: HH-Web's support for caching is evolving, but in its current form it permits marking caching guidelines
+  for specific URLs.  Specifically, caching causes HH-Web to preseve any generated content (from templates and tags, typically) in
+  an in-memory cache for later use.  If a request for a page in its map appear again, then HH-Web will serve the content from the cache,
+  rather than invoking code to regenerate the content fresh.  
+  
