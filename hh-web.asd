@@ -24,7 +24,7 @@
 (in-package :hh-web-asd)
 (defsystem hh-web 
     :name "hh-web" 
-    :version "0.01" 
+    :version "0.02" 
     :serial t 
     :components ((:file "package")
 		 (:file "utils") 
@@ -52,7 +52,7 @@
   :depends-on (
 	       ;; external packages
 	       :log5
-	       :hunchentoot
+	       (:version :hunchentoot "1.2")
 	       :drakma
 	       :cl-fad
 	       :parenscript
@@ -70,7 +70,7 @@
 
 (defsystem hh-web-tests 
     :name "hh-web-tests" 
-    :version "0.01" 
+    :version "0.02" 
     :serial t 
     :components ((:file "tests")) 
     :depends-on (:hh-web))

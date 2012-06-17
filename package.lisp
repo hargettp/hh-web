@@ -30,9 +30,6 @@
 	:sb-mop 
 	:cl-ppcre 
 	:local-time 
-	;; :cl-couchdb-client
-	;; :cl-couchdb-object-layer
-	;; :cl-couchdb-view-server
 	:vecto
 	:wt) 
   (:export 

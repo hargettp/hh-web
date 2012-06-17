@@ -114,7 +114,7 @@ location specified path relative to the skeleton's base director"
 	(format os "               (:file \"server\"))~%")
 	(format os "  :depends-on (#:log5~%")
 	(format os "               #:hh-web-tags~%")
-	(format os "               #:hh-web))~%"))))
+	(format os "               (:version #:hh-web \"0.02\")))~%"))))
 
   (:method ((skeleton skeleton) (component (eql :package)))
     (let* ((package-name (string-downcase (symbol-name (for-package skeleton)))))
