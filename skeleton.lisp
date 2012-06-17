@@ -81,7 +81,7 @@ location specified path relative to the skeleton's base director"
 
 (defgeneric generate-skeleton (skeleton)
   (:documentation "Generate all the files necessary for a project using hh-web")
-  (defmethod generate-skeleton-component ((skeleton skeleton))
+  (:method ((skeleton skeleton))
     ;; Generate each component--creating directory should be first one
     (loop for component in (skeleton-components skeleton)
        do (generate-skeleton-component skeleton component))
