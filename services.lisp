@@ -20,26 +20,6 @@
 
 (in-package :hh-web)
 
-(export
- (list
-
-  'with-http-parameters
-  'meta-service-request-p
-  'http-get-p
-  'http-post-p
-  'http-put-p
-  'http-delete-p
-
-  'defservice
-  'defservice-client
-  'defservice-handler
-
-  'service-url
-
-  'service-client
-
-  ))
-
 ;;;------------------------------------------------------------------------------------
 ;;; Constants
 ;;;------------------------------------------------------------------------------------

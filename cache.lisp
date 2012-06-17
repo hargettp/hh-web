@@ -20,19 +20,6 @@
 
 (in-package :hh-web)
 
-(export
- (list
-
-  'get-cached-item
-  'make-fs-cache
-  'make-package-fs-cache
-  'create-file-cache-dispatcher-and-handler
-  'create-file-cache-dispatcher-and-handler-for-root
-  'create-package-file-cache-dispatcher-and-handler
-
-  )
-)
-
 ;;;------------------------------------------------------------------------------------
 ;;; Dynamic variables
 ;;;------------------------------------------------------------------------------------

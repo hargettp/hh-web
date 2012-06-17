@@ -20,19 +20,6 @@
 
 (in-package :hh-web)
 
-(export
- (list
-
-  'defurl
-  'defurls
-  'create-package-folder-dispatcher-and-handler
-  'reset-urls
-  'flush-url-category
-  'dispatch-url-cache
-
-  )
- )
-
 ;;;------------------------------------------------------------------------------------
 ;;; Classes + types
 ;;;------------------------------------------------------------------------------------

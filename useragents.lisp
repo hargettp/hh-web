@@ -20,8 +20,6 @@
 
 (in-package :hh-web)
 
-(export `( *user-agent-strings* *enabled-user-agents* *user-agent* enabled-user-agents ))
-
 (defvar *user-agent-strings* 
   (let ((new-user-agent-strings (make-hash-table)))
     (macrolet ((user-agent-string (key string)

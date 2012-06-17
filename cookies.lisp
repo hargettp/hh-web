@@ -20,15 +20,6 @@
 
 (in-package :hh-web)
 
-(export
- (list
-  
-  'defcookie
-  'with-cookies
-  
-  )
- )
-
 (defgeneric cookie-key (cookie)
   (:documentation
     "

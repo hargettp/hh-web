@@ -20,8 +20,6 @@
 
 (in-package :hh-web)
 
-(export `( locale-service ))
-
 (defservice locale-service (:documentation "Service for editing locales usable by the application")
   (:method create-locale 
     :documentation ""

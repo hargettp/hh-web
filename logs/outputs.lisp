@@ -20,13 +20,6 @@
 
 (in-package :hh-web)
 
-(export
- (list
-
-  'msg-timestamp
-
-  ))
-
 (log5:defoutput msg-timestamp 
     ;; 10/Oct/2000:13:55:36 -0700 
     (format-timestring nil (now) :format +rfc-1123-format+))

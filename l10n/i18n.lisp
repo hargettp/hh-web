@@ -20,19 +20,6 @@
 
 (in-package :hh-web)
 
-(export `( _ 
-	   set-locale
-	   gettext
-	   deflocale
-	   get-localizable-strings
-	   get-localization-contexts
-	   get-available-locales
-	   get-localizable-string-notes
-	   get-string-localization
-	   get-string-localization-notes
-	   init-localization
-	   *locale-package*))
-
 ;; -----------------------------------------------------------------------------
 ;;
 ;; Classes + types

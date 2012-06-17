@@ -26,7 +26,7 @@
     :name "hh-web" 
     :version "0.01" 
     :serial t 
-    :components ((:file "package-hh-web")
+    :components ((:file "package")
 		 (:file "utils") 
 		 (:module "l10n"
 			:serial t

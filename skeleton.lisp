@@ -20,8 +20,6 @@
 
 (in-package :hh-web)
 
-(export `(make-skeleton))
-
 (defclass skeleton ()
   ((location :type (satisfies directory-pathname-p) 
 	     :initarg :location 
