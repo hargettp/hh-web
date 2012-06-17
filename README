@@ -5,11 +5,9 @@ HH-Web is the beginnings of a web application framework written in Lisp designed
 See the LICENSE file for the license covering all code within the HH-Web directory and any subdirectories.  
 Basically, it's the MIT license, so you are free to do what you want, provided you reproduce the original copyright.
 
-For more details, please refer to http://haphazardhouse.net/projects/hh-web.
-
 * Features *
 
-In its present form (as of August 2010), there are 4 principle features in hh-web:
+In its present form (as of June 2012), there are 4 principle features in hh-web:
 
   * Custom tags: HH-Web, through the hh-web-tags package,  let's the developer write a web page using conventional
   Lisp s-expression syntax, completely with properly generated CSS & Javascript.  More importantly, commonly used 
