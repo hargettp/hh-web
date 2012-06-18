@@ -7,7 +7,7 @@ Basically, it's the MIT license, so you are free to do what you want, provided y
 
 * Features *
 
-In its present form (as of June 2012), there are 4 principle features in hh-web:
+In its present form (as of June 2012), there are 4 principal features in hh-web:
 
   * Custom tags: HH-Web, through the hh-web-tags package,  let's the developer write a web page using conventional
   Lisp s-expression syntax, completely with properly generated CSS & Javascript.  More importantly, commonly used 
