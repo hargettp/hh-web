@@ -20,17 +20,21 @@
 
 (in-package :hh-web)
 
+(log5:defcategory url-dispatch)
+
 ;;;------------------------------------------------------------------------------------
 ;;; Classes + types
 ;;;------------------------------------------------------------------------------------
 
 (defclass url-cache-provider ()
-  ((patterns :initform () :accessor patterns)))
+  ((package :initform () :initarg :package :accessor package-of) 
+   (patterns :initform () :accessor patterns)
+   (modified-time :initform (now) :initarg :modified :accessor modified-time-of)))
 
 (defclass url-cache-item ()
   ((path :initarg :path :accessor cache-key)
    (test :initarg :test :accessor test)
-   (modified-time :initarg :modified :accessor modified-time-of)
+   (modified-time :initarg :modified :initform (now) :accessor modified-time-of)
    (content :initform (make-hash-table) :initarg :content :accessor content)
    (generator :initarg :generator :accessor generator)
    (categories :initform () :initarg :categories :accessor categories 
@@ -45,10 +49,9 @@
 ;;; Dynamic variables
 ;;;------------------------------------------------------------------------------------
 
-(defvar *path-pattern-dispatchers* ()
-  "A list of path pattern dispatcher, created by defurl.  Each
-  handler tests the path against a regex, and returns a handler if the match
-  succeeds, nil otherwise.")
+(defvar *minimum-url-cache-stale-time* 1
+  "Minimum time in seconds between checks for changes to URLs; lower times mean
+  check for updates to defurls more often, higher times mean check more rarely")
 
 (defvar *url-cache* (make-instance 'cache :provider (make-instance 'url-cache-provider)) )
 
@@ -85,10 +88,7 @@
 (defun cacheable-request-p (hunchentoot:*request*)
   "If a request has any query parameters, it's not cachable"
   (not (or (hunchentoot:get-parameters* hunchentoot:*request*)
-	   (hunchentoot:post-parameters* hunchentoot:*request*)
-	   )
-       )
-  )
+	   (hunchentoot:post-parameters* hunchentoot:*request*))))
 
 (defmacro parameter-name-p (register)
   `(and ,register 
@@ -280,8 +280,30 @@
 	    (remhash url (entries *url-cache*) )))
     flushing-urls))
 
+(defmacro reset-urls ()
+  "Clear out list of dispatchers; useful to ensures that stale patterns do not survive reload"
+  `(setf (patterns (cache-provider *url-cache*)) nil))
+
+(defun load-urls ()
+  "Refresh the list of URL dispatchers, if necessary"
+  (let* ((*package* (package-of (cache-provider *url-cache*)))
+	(package-name (intern (package-name *package*) :keyword))
+	(url-path (asdf:system-relative-pathname package-name "urls" :type "lisp")))
+    (when (timestamp> (now) 
+		      (timestamp+ (modified-time-of (cache-provider *url-cache*)) *minimum-url-cache-stale-time* :sec))
+      ;; time to check for changes on disk
+      (log5:log-for (url-dispatch) "Loading URLs for package ~a from ~a~%" package-name url-path)
+      (reset-urls)
+      ;; read urls
+      (with-open-file (input-stream url-path)
+	(loop 
+	   while (listen input-stream)
+	   for expr = (eval (read input-stream)) then (eval (read input-stream))
+	   collect expr)))))
+
 (defun dispatch-url-cache (hunchentoot:*request*)
   (use-backtrace-logging 
+   (load-urls)
    (let ((cached-item (get-cached-item *url-cache* hunchentoot:*request*) ))
      (when cached-item
        ;; for any localized resources
@@ -289,10 +311,6 @@
 	 ;; item exists
 	 ;; return the handler lambda--already created
 	 (handler cached-item)) ))))
-
-(defmacro reset-urls ()
-  "Clear out list of dispatchers; useful to ensures that stale patterns do not survive reload"
-  `(setf (patterns (cache-provider *url-cache*)) nil))
 
 (defmacro defurls (&rest urldefs)
   `(progn

@@ -33,6 +33,10 @@
     :initform nil
     :initarg :tag-library-providers
     :accessor tag-library-provider-registry-of)
+   (url-cache
+    :initform nil
+    :initarg :urlcache
+    :accessor url-cache-of)
    (dispatch-table
     :initform nil
     :initarg :dispatchers
@@ -51,9 +55,11 @@
 (defmethod hunchentoot:acceptor-dispatch-request ((hunchentoot:*acceptor* web-server-acceptor) (hunchentoot:*request* hunchentoot:request))
   (let* ((*template-provider-registry* (template-provider-registry-of hunchentoot:*acceptor*) )
 	 (*tag-library-provider-registry* (tag-library-provider-registry-of hunchentoot:*acceptor*) )
+	 (*url-cache* (url-cache-of hunchentoot:*acceptor*))
 	 (hunchentoot:*log-lisp-errors-p* t)
 	 (hunchentoot:*show-lisp-errors-p* t)
 	 (hunchentoot:*dispatch-table* (dispatch-table-of hunchentoot:*acceptor*) ))
+    (format *error-output* "Acceptor cache is ~a~%" *url-cache*)
     (call-next-method)))
 
 (defmethod run-web-server ( (server-acceptor web-server-acceptor) &key (wait nil) )
@@ -65,9 +71,9 @@
 
 (defmacro create-web-server (( &rest initialization-args)
 			     &key 
-			     (folders nil) 
-			     (packages nil)
-			     (dispatchers nil))
+			       (folders nil) 
+			       (packages nil)
+			       (dispatchers nil))
   "Create a web server, using the provided initialization arguments for constructing the acceptor.
 The acceptor class used internally inherits from hunchentoot's easy-acceptor, so initialization arguments
 valid for that class are also valid here as well.
@@ -89,11 +95,13 @@ after attempting to locate a handler based on provided URL routes"
 						      ,url-prefix)))
 						packages))
 	(template-provider-registry (local-template-provider-registry-symbol) )
-	(tag-library-provider-registry (local-tag-library-provider-registry-symbol) ))
+	(tag-library-provider-registry (local-tag-library-provider-registry-symbol) )
+	(url-cache `(make-instance 'cache :provider (make-instance 'url-cache-provider :package *package*))))
     `(make-instance 'web-server-acceptor
 		    ,@initialization-args
 		    :template-providers ,template-provider-registry
 		    :tag-library-providers ,tag-library-provider-registry
+		    :urlcache ,url-cache
 		    :dispatchers (list
 				  ,@folder-dispatchers
 				  ,@dispatchers

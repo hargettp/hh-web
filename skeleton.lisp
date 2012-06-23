@@ -111,7 +111,7 @@ location specified path relative to the skeleton's base director"
       (format os "  :components ((:file \"package\")~%")
       (format os "               (:file \"logs\")~%")
       (format os "               (:file \"templates\")~%")
-      (format os "               (:file \"urls\")~%")
+      ;; (format os "               (:file \"urls\")~%")
       (format os "               (:file \"server\"))~%")
       (format os "  :depends-on (#:log5~%")
       (format os "               #:hh-web-tags~%")
@@ -215,8 +215,6 @@ location specified path relative to the skeleton's base director"
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :urls)))
   (let* ((package-name (string-downcase (symbol-name (for-package skeleton)))))
     (with-skeleton-file (os skeleton #p"urls.lisp")
-      (format os "(in-package :~a)~%~%" package-name)
-      (format os "(reset-urls)~%")
       (format os "(defurl \"^/$\" :handler (home-page))~%"))))
 
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :locales)))

@@ -63,13 +63,20 @@
    #:locale-service
 
    ;; Logging
+
+   ;; -- categories
    #:stack-trace
    #:http-access 
    #:http-message
+   #:url-dispatch
+
+   ;; -- functions
    #:log-http-access
    #:log-http-message
    #:use-backtrace-logging
    #:msg-timestamp
+
+   ;; -- types
    #:rotating-log-sender
 
    ;; Server
