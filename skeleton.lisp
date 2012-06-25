@@ -179,7 +179,7 @@ location specified path relative to the skeleton's base director"
     (with-skeleton-file (os skeleton #p"templates.lisp")
       (format os "(in-package :~a)~%~%" package-name)
       (format os "(deftemplates :tag-library-packages (\"~a\")~%" package-name)
-      (format os "  :template-packages (\"~a\")~%" package-name)
+      (format os "  :template-packages (:~a)~%" package-name)
       (format os "  :templates (~%")
       (format os "              ;; General site templates~%")
       (format os "              (home-page \"home_page.lisp\")))~%"))

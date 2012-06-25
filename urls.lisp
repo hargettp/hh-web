@@ -27,9 +27,17 @@
 ;;;------------------------------------------------------------------------------------
 
 (defclass url-cache-provider ()
-  ((package :initform () :initarg :package :accessor package-of) 
-   (patterns :initform () :accessor patterns)
-   (modified-time :initform (now) :initarg :modified :accessor modified-time-of)))
+  ((package 
+    :initform () 
+    :initarg :package 
+    :accessor package-of) 
+   (patterns 
+    :initform () 
+    :accessor patterns)
+   (modified-time 
+    :initform (universal-to-timestamp 0) 
+    :initarg :modified 
+    :accessor modified-time-of)))
 
 (defclass url-cache-item ()
   ((path :initarg :path :accessor cache-key)
@@ -287,23 +295,22 @@
 (defun load-urls ()
   "Refresh the list of URL dispatchers, if necessary"
   (let* ((*package* (package-of (cache-provider *url-cache*)))
-	(package-name (intern (package-name *package*) :keyword))
-	(url-path (asdf:system-relative-pathname package-name "urls" :type "lisp")))
-    (when (timestamp> (now) 
-		      (timestamp+ (modified-time-of (cache-provider *url-cache*)) *minimum-url-cache-stale-time* :sec))
+	 (package-name (intern (package-name *package*) :keyword))
+	 (url-path (asdf:system-relative-pathname package-name "urls" :type "lisp"))
+	 (provider (cache-provider *url-cache*)))
+    (when (and (timestamp> (now) 
+			   (timestamp+ (modified-time-of provider) *minimum-url-cache-stale-time* :sec))
+	       (timestamp> (universal-to-timestamp (file-write-date url-path))
+			   (modified-time-of provider)))
       ;; time to check for changes on disk
       (log5:log-for (url-dispatch) "Loading URLs for package ~a from ~a~%" package-name url-path)
       (reset-urls)
       ;; read urls
-      (with-open-file (input-stream url-path)
-	(loop 
-	   while (listen input-stream)
-	   for expr = (eval (read input-stream)) then (eval (read input-stream))
-	   collect expr)))))
+      (load url-path)
+      (setf (modified-time-of (cache-provider *url-cache*)) (now)))))
 
 (defun dispatch-url-cache (hunchentoot:*request*)
   (use-backtrace-logging 
-   (load-urls)
    (let ((cached-item (get-cached-item *url-cache* hunchentoot:*request*) ))
      (when cached-item
        ;; for any localized resources

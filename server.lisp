@@ -59,7 +59,8 @@
 	 (hunchentoot:*log-lisp-errors-p* t)
 	 (hunchentoot:*show-lisp-errors-p* t)
 	 (hunchentoot:*dispatch-table* (dispatch-table-of hunchentoot:*acceptor*) ))
-    (format *error-output* "Acceptor cache is ~a~%" *url-cache*)
+    (load-templates)
+    (load-urls)
     (call-next-method)))
 
 (defmethod run-web-server ( (server-acceptor web-server-acceptor) &key (wait nil) )
