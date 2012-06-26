@@ -30,10 +30,71 @@
 	:sb-mop 
 	:cl-ppcre 
 	:local-time 
-	:vecto
-	:wt) 
+	:vecto) 
   (:export 
    ;; Exported symbols go here
+
+   ;; For tags
+
+   #:defhtmltag
+   #:defentity
+   #:hout
+   #:*current-tag*
+   #:*this-tag*
+   #:*tag-library-registry*
+   #:call-next-tag-method
+
+   #:_body
+   #:body-of
+   #:style-of 
+   #:html-id
+   #:css-class
+   #:style-of
+   #:rel-of
+   #:id
+   #:class
+   #:style
+   #:rel
+
+   #:htmltag
+   #:render-as-html
+
+   #:+@
+   #:+title
+   #:+link
+
+   #:expansion
+   #:tags
+
+   #:html
+   #:page
+   #:with-tag-reader
+
+   ;; For tag libraries
+   #:*tag-library*
+   #:*tag-library-provider-registry*
+   #:*package-template-folder*
+   #:*package-tag-library-folder*
+   #:*template*
+   #:*minimum-template-stale-time*
+   #:create-folder-tag-library-provider
+   #:create-asdf-system-tag-library-provider
+
+   #:in-tag-library
+   #:use-tag-library
+   #:+tag-library
+   #:local-tag-library-provider-registry-symbol
+   
+   ;; For templates
+   #:template
+   #:deftemplate
+   #:deftemplates
+   #:*template*
+   #:*template-provider-registry*
+   #:create-folder-template-provider
+   #:create-asdf-system-template-provider
+   #:local-template-provider-registry-symbol
+   #:load-templates
 
    ;; Caching
    #:get-cached-item

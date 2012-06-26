@@ -114,7 +114,6 @@ location specified path relative to the skeleton's base director"
       ;; (format os "               (:file \"urls\")~%")
       (format os "               (:file \"server\"))~%")
       (format os "  :depends-on (#:log5~%")
-      (format os "               #:hh-web-tags~%")
       (format os "               (:version #:hh-web \"0.02\")))~%"))))
 
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :package)))
@@ -125,7 +124,6 @@ location specified path relative to the skeleton's base director"
       (format os "(defpackage #:~a~%" package-name)
       (format os "  (:nicknames :~a)~%" package-name)
       (format os "  (:use :cl~%")
-      (format os "        :hh-web-tags~%")
       (format os "        :hh-web)~%")
       (format os "  (:export~%")
       (format os "    ;; Exports go here~%")

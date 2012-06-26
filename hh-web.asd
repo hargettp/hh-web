@@ -39,10 +39,15 @@
 				     (:file "misc")
 				     (:file "hunchentoot")))
 		 (:file "useragents")
+		 (:file "tags")
+		 (:file "taglibraries")
+		 (:file "templates")
+		 (:file "images")
 		 (:file "cookies")
 		 (:file "services")
 		 (:file "cache")
 		 (:file "urls")
+		 (:file "documentation")
 		 (:file "server")
 		 (:module "meta"
 			:serial t
@@ -64,9 +69,7 @@
                :uuid
 
 	       ;; project packages
-	       :hh-web-tags
-               )
-  )
+               ))
 
 (defsystem hh-web-tests 
     :name "hh-web-tests" 
