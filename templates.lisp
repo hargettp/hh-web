@@ -159,8 +159,8 @@
       (use-package 'hh-web template-package)
       ;; read template
       (loop 
-	 while (listen input-stream)
-	 for expr = (with-tag-reader () (read input-stream)) then (with-tag-reader () (read input-stream))
+	 for expr = (with-tag-reader () (read input-stream nil :eof)) then (with-tag-reader () (read input-stream nil :eof))
+	 until (eq expr :eof)
 	 unless (process-directive expr) collect expr)))
   (:method ( (input-string string) (template-package package) (template-args list) (template-keyword-args list) )
     (with-input-from-string (input-stream input-string)

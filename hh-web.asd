@@ -56,6 +56,7 @@
 
   :depends-on (
 	       ;; external packages
+	       :trivial-backtrace
 	       :log5
 	       (:version :hunchentoot "1.2")
 	       :drakma

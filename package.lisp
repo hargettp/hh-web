@@ -26,8 +26,8 @@
 (defpackage :hh-web
   (:nicknames :hh-web)
   (:use :cl 
+	:trivial-backtrace
 	:cl-fad
-	:sb-mop 
 	:cl-ppcre 
 	:local-time 
 	:vecto) 

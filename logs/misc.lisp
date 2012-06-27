@@ -30,6 +30,6 @@
 			     (log5:log-for (log5:error stack-trace) 
 					   "~a~%"
 					   (with-output-to-string (os)
-					     (sb-debug:backtrace most-positive-fixnum os)))
+					     (print-backtrace-to-stream os)))
 			     (signal e))))
      ,@body))

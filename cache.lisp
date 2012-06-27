@@ -212,7 +212,7 @@
 
 (defmethod fs-cache-file-modified-time ( path (provider fs-cache-provider) )
   (let ((full-path (fs-cache-file-full-path path provider)))
-    (unix-to-timestamp (sb-posix:stat-mtime (sb-posix:stat full-path)) )))
+    (universal-to-timestamp (file-write-date full-path) )))
 
 (defmethod cached-item-expiredp ( (provider fs-cache-provider) item )
   (timestamp>  (fs-cache-file-modified-time (cache-key item) provider)
@@ -227,7 +227,7 @@
 	 (full-path (fs-cache-file-full-path path provider) ))
     (when (and (probe-file full-path)
 	       (not (cl-fad:directory-pathname-p full-path ) ))
-      (let* ((file-size (sb-posix:stat-size (sb-posix:stat full-path)) )
+      (let* ((file-size (with-open-file (is full-path) (file-length is)) )
 	     (content-buffer (make-array file-size :initial-element 0 :element-type `(unsigned-byte 8)) )
 	     (item (make-instance 'fs-cache-item 
 				  :path full-path
