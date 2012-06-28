@@ -24,7 +24,6 @@
 (in-package :hh-web-asd)
 
 (defpackage :hh-web
-  (:nicknames :hh-web)
   (:use :cl 
 	:trivial-backtrace
 	:cl-fad
@@ -75,7 +74,6 @@
    #:*tag-library-provider-registry*
    #:*package-template-folder*
    #:*package-tag-library-folder*
-   #:*template*
    #:*minimum-template-stale-time*
    #:create-folder-tag-library-provider
    #:create-asdf-system-tag-library-provider

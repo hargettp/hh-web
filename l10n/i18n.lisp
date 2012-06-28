@@ -138,7 +138,9 @@
 
 (defun load-string-localizations (package locale)
   (when (probe-file (get-package-string-localization-file package locale))
-    (with-open-file (is (get-package-string-localization-file package locale) :external-format :utf-8)
+    (with-open-file (is (get-package-string-localization-file package locale) 
+			:external-format :utf-8 
+			:element-type #-lispworks 'extended-char #+lispworks 'lispworks:simple-char)
       (let* ((*package* (find-package package))
 	    (new-locale (eval (read is))))
 	(setf (gethash (name new-locale) *locales*) new-locale)

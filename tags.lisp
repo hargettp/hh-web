@@ -694,7 +694,9 @@ into a tag object"))
 (defmacro defentity (name text &optional documentation)
   "Defines an entity usable in HTML"
   `(progn
-     (defvar ,name ,text ,documentation)
+     ,(if documentation
+	  `(defvar ,name ,text ,documentation)
+	  `(defvar ,name ,text))
      (export (list (quote ,name)))))
 
 (defmacro html (&rest body)

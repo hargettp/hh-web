@@ -58,6 +58,7 @@
 	       ;; external packages
 	       :trivial-backtrace
 	       :log5
+	       :bordeaux-threads
 	       (:version :hunchentoot "1.2")
 	       :drakma
 	       :cl-fad
