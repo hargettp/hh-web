@@ -27,9 +27,9 @@ In its present form (as of June 2012), there are 4 principal features in HH-Web:
 
 As an aide to starting new projects that use HH-Web to structure web application development, one can load the HH-Web system in the REPL, then execute the following expression
 
-    ((hh-web:make-skeleton :for :acme :in #p"~/lisp/acme/")
+    ((hh-web:make-skeleton :for :acme :in #p"~/lisp/")
   
-Substitute your own project name for *acme* in the above expression.  Note that the argument to the **:for** keyword must be a symbol or string, and the argument to the **:in** keyword must be a directory path (e.g., it must end in "/"), although that directory should not exist,  `make-skeleton` will not overwrite any files or directories that already present--it will raise an error instead.
+Substitute your own project name for *acme* in the above expression.  Note that the argument to the **:for** keyword must be a symbol or string, and the argument to the **:in** keyword must be a directory path (e.g., it must end in "/"), although that directory should not exist,  `make-skeleton` will not overwrite any files or directories that already present--it will raise an error instead.  In the above example, the package for your new application will appear as a subdirectory of the one you provided, thus it will appear in `~/lisp/acme/`.
 
 If you use [Quicklisp](http://quicklisp.org) and the "~/lisp/" directory is registered with [ASDF](http://common-lisp.net/project/asdf/) as a [source directory](http://common-lisp.net/project/asdf/asdf.html#Configuring-ASDF), then you can then run the following at your REPL to start your newly-created web application:
 
@@ -40,7 +40,7 @@ Now just point your browser at [http://localhost:8000](http://localhost:8000), a
 
 Additionally, the generated skeleton of a project also creates a single script called `quickrun.lisp` that lets you load and run your site in one step.  For example, with SBCL:
 
-    sbcl --load "~/lisp/acme/quickrun.lisp"
+    sbcl --load ~/lisp/acme/quickrun.lisp
     
 Here's the directory structure created for your project:
 

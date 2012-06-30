@@ -171,6 +171,9 @@ location specified path relative to the skeleton's base director"
       (format os "               (std-header)~%")
       (format os "               (std-body _body)))~%"))))
 
+;; Documentation
+;; (package-doc-page \"docs.lisp\" :args ( package ) )
+
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :templates)))
   (let* ((package-name (string-downcase (symbol-name (for-package skeleton)))))
     (with-skeleton-file (os skeleton #p"templates.lisp")
@@ -179,7 +182,9 @@ location specified path relative to the skeleton's base director"
       (format os "  :template-packages (:~a)~%" package-name)
       (format os "  :templates (~%")
       (format os "              ;; General site templates~%")
-      (format os "              (home-page \"home_page.lisp\")))~%"))
+      (format os "              (home-page \"home_page.lisp\")~%")
+      (format os "              ;; Documentation viewer~%")
+      (format os "              (package-doc-page \"docs.lisp\" :args ( package ) )))~%"))
     (ensure-directories-exist (merge-pathnames #p"templates/" (skeleton-location skeleton)))
     (with-skeleton-file (os skeleton #p"templates/home_page.lisp")
       (format os "(+tag-library :html)~%")
@@ -187,7 +192,13 @@ location specified path relative to the skeleton's base director"
       (format os "(page~%")
       (format os "  (+title \"~a home page\")~%" (string-capitalize package-name))
       (format os "  (std-page~%")
-      (format os "    (div \"hello world!\")))~%"))))
+      (format os "    (div \"hello world!\")))~%"))
+    (with-skeleton-file (os skeleton #p"templates/docs.lisp")
+      (format os "(+tag-library :html)~%")
+      (format os "(+tag-library :std)~%~%")
+      (format os "(+tag-library :doc)~%~%")
+      (format os "(page~%")
+      (format os "  (doc-page {:package package}))~%"))))
 
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :logs)))
   (let* ((package-name (string-downcase (symbol-name (for-package skeleton)))))
@@ -212,7 +223,10 @@ location specified path relative to the skeleton's base director"
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :urls)))
   (let* ((package-name (string-downcase (symbol-name (for-package skeleton)))))
     (with-skeleton-file (os skeleton #p"urls.lisp")
-      (format os "(defurl \"^/$\" :handler (home-page))~%"))))
+      (format os ";; Dispatch to home page template~%")
+      (format os "(defurl \"^/$\" :handler (home-page))~%~%")
+      (format os ";; Dispatch to package documentation viewer~%")
+      (format os "(defurl \"^/docs/(?<package>.*)\" :handler (package-doc-page package) :categories (docs) )~%"))))
 
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :locales)))
   )
