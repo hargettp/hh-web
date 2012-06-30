@@ -7,7 +7,7 @@ Basically, it's the MIT license, so you are free to do what you want, provided y
 
 ##Platforms##
 
-The primary platform for HH-Web development is SBCL x64 on Mac OS X Lion; other Common Lisp implementations that appear to work correctly are CCL 1.8 x86, LispWorks 6.01, and ABCL 1.0.1.  
+The primary platform for HH-Web development is SBCL x64 on Mac OS X Lion (latest SBCL rev tested is 1.0.57); other Common Lisp implementations that appear to work correctly are CCL 1.8 x86, LispWorks 6.01, and ABCL 1.0.1.  HH-Web has also been tested with SBCL 1.0.57 x64 on Ubuntu 11.04.
 
 Platforms with known issues include CCL x64 (problem with threads) and CMUCL (which does not like named-readtables).
 
