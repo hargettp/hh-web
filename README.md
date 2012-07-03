@@ -25,7 +25,11 @@ In its present form (as of June 2012), there are 4 principal features in HH-Web:
 
 ##Getting Started##
 
-As an aide to starting new projects that use HH-Web to structure web application development, one can load the HH-Web system in the REPL, then execute the following expression
+As an aide to starting new projects that use HH-Web to structure web application development, you can load the HH-Web system into the REPL using [Quicklisp](http://quicklisp.org) (included as of 7/3/2012--thanks [Zach](http://xach.com)!):
+
+    (ql:quickload :hh-web)
+
+then execute the following expression:
 
     ((hh-web:make-skeleton :for :acme :in #p"~/lisp/")
   
@@ -37,6 +41,10 @@ If you use [Quicklisp](http://quicklisp.org) and the "~/lisp/" directory is regi
     (acme:start-httpd-server)
 
 Now just point your browser at [http://localhost:8000](http://localhost:8000), and you should see a boilerplate homepage.
+
+You can stop your application at any time by running the following:
+
+    (acme:stop-httpd-server)
 
 Additionally, the generated skeleton of a project also creates a single script called `quickrun.lisp` that lets you load and run your site in one step.  For example, with SBCL:
 
