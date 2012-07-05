@@ -31,7 +31,7 @@ As an aide to starting new projects that use HH-Web to structure web application
 
 then execute the following expression:
 
-    ((hh-web:make-skeleton :for :acme :in #p"~/lisp/")
+    (hh-web:make-skeleton :for :acme :in #p"~/lisp/")
   
 Substitute your own project name for *acme* in the above expression.  Note that the argument to the **:for** keyword must be a symbol or string, and the argument to the **:in** keyword must be a directory path (e.g., it must end in "/"), although that directory should not exist,  `make-skeleton` will not overwrite any files or directories that already present--it will raise an error instead.  In the above example, the package for your new application will appear as a subdirectory of the one you provided, thus it will appear in `~/lisp/acme/`.
 
