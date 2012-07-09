@@ -74,4 +74,4 @@ To develop your site, edit the following files as needed, and refresh your brows
 
 # Learning More
 
-For more information on how HH-Web works and how to make use of it for your application, see the documentation on the [wiki](https://github.com/hargettp/hh-web/wiki)
+For more information on how HH-Web works and how to make use of it for your application, see the documentation on the [wiki](https://github.com/hargettp/hh-web/wiki).
