@@ -71,3 +71,7 @@ To develop your site, edit the following files as needed, and refresh your brows
 * templates.lisp for the declaring what templates you wish to use
 * any file in the taglibraries folder for designing your tag or widget libraries
 * any file in the templates folder for creating your own page templates
+
+# Learning More
+
+For more information on how HH-Web works and how to make use of it for your application, see the documentation on the [wiki](https://github.com/hargettp/hh-web/wiki)
