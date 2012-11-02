@@ -61,7 +61,7 @@
 
 (defhtmltag form
     :attributes (action method)
-    :init (progn (setf action "GET")))
+    :init (progn (unless action (setf action "GET"))))
 
 (defhtmltag img
     :noendtag t
