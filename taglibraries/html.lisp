@@ -41,7 +41,8 @@
     :attributes (name type value))
 
 (defhtmltag submit
-    :content (input (+@ :type "submit" :value "OK") ))
+    :attributes (value)
+    :content (input (+@ :type "submit" :value (or value "OK")) ))
 
 (defhtmltag checkbox
     :bases (input)
