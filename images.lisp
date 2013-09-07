@@ -34,4 +34,4 @@
 	     (with-canvas (:width ,width :height ,height)
 	       ,@body
 	       (save-png-stream os)))
-	   "image/png"))
+           "image/png"))
