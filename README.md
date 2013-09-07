@@ -72,6 +72,11 @@ To develop your site, edit the following files as needed, and refresh your brows
 * any file in the taglibraries folder for designing your tag or widget libraries
 * any file in the templates folder for creating your own page templates
 
+The generated skeleton also demonstrates one mechanism for integrating [Bootstrap](http://getbootstrap.com) 
+and [jQuery](http://jquery.com) into a site, so that the resources of both libraries are always available.
+Note that the chosen method here may or may not be suitable for your scenario: the skeleton generates
+links to CDNs that host these libraries to ease other web sites.
+
 # Learning More
 
 For more information on how HH-Web works and how to make use of it for your application, see the documentation on the [wiki](https://github.com/hargettp/hh-web/wiki).
