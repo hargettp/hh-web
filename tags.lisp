@@ -414,7 +414,7 @@ into a tag object"))
   (render-tag-ready-scripts *current-tag* )
   (render-tag-content *current-tag* ))
 
-(defmethod render-as-html :around (*current-tag*)
+(defmethod render-as-html :around (tag)
   (handler-case 
       (call-next-method)
     (error (e) 
@@ -733,58 +733,59 @@ into a tag object"))
        (html-for-user-agent ,@raw-body)
      ;; now render the page
      (if page-content ;; in case nothing suitable for the desired user agent
-	 (values (with-output-to-string (*html-out*)
-		   (hout "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">~%")
-		   (hout "<html xmlns=\"http://www.w3.org/1999/xhtml\">~%")
-		   (hout "<head>~%")
+         (values (with-output-to-string (*html-out*)
+                   (hout "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">~%")
+                   (hout "<html xmlns=\"http://www.w3.org/1999/xhtml\">~%")
+                   (hout "<head>~%")
 
-		   (when *page-title*
-		     (hout "<title>~a</title>~%" *page-title*))
+                   (when *page-title*
+                     (hout "<title>~a</title>~%" *page-title*))
 
-		   (when *page-links*
-		     (dolist (link *page-links*)
-		       (destructuring-bind (rel type href) link
-			 (hout "<link~@[ rel='~a'~]~@[ type='~a'~]~@[ href='~a'~]/>~%"
-			       rel type href))))
+                   (when *page-links*
+                     (dolist (link *page-links*)
+                       (destructuring-bind (rel type href) link
+                         (hout "<link~@[ rel='~a'~]~@[ type='~a'~]~@[ href='~a'~]/>~%"
+                               rel type href))))
 
-		   (when *page-style-sheets*
-		     (dolist (style-sheet *page-style-sheets*)
-		       (hout "<link type='text/css' href='~a' rel='stylesheet' />~%"
-			     style-sheet )))
-		   
-		   (when *page-styles*
-		     (hout "<style type='text/css'>~%~%~{~a~%~}~%</style>~%"
-			   *page-styles*))
+                   (when *page-style-sheets*
+                     (dolist (style-sheet *page-style-sheets*)
+                       (hout "<link type='text/css' href='~a' rel='stylesheet' />~%"
+                             style-sheet )))
+                   
+                   (when *page-styles*
+                     (hout "<style type='text/css'>~%~%~{~a~%~}~%</style>~%"
+                           *page-styles*))
 
-		   (when *page-script-libraries*
-		     (dolist (library *page-script-libraries*)
-		       (hout "<script type='text/javascript' src='~a'></script>~%"
-			     library)))
-		   
-		   (when (and *page-scripts*
-			      (not (equal *page-scripts* "")))
-		     (hout "<script type='text/javascript'>~%~%~{~a~%~}~%</script>~%"
-			   *page-scripts*))
+                   (hout "</head>~%")
 
-		   (when (and *page-ready-scripts*
-			      (not (equal *page-ready-scripts* "")))
-		     (progn
-		       (hout "<script type='text/javascript'>~%~%")
-		       (hout "$(function(){~%~{~a~%~}~%~%"
-			     *page-ready-scripts*)
-		       (hout "~%});")
-		       (hout "~%</script>~%")))
-		   (hout "</head>~%")
+                   (hout "<body>~%")
 
-		   (hout "<body>~%")
+                   (hout "~a~%" page-content)
 
-		   (hout "~a~%" page-content)
+                   (when *page-script-libraries*
+                     (dolist (library *page-script-libraries*)
+                       (hout "<script type='text/javascript' src='~a'></script>~%"
+                             library)))
+                   
+                   (when (and *page-scripts*
+                              (not (equal *page-scripts* "")))
+                     (hout "<script type='text/javascript'>~%~%~{~a~%~}~%</script>~%"
+                           *page-scripts*))
 
-		   (hout "</body>~%")
+                   (when (and *page-ready-scripts*
+                              (not (equal *page-ready-scripts* "")))
+                     (progn
+                       (hout "<script type='text/javascript'>~%~%")
+                       (hout "$(function(){~%~{~a~%~}~%~%"
+                             *page-ready-scripts*)
+                       (hout "~%});")
+                       (hout "~%</script>~%")))
 
-		   (hout "</html>~%"))
-		 "text/html")
-	 (values nil nil))))
+                   (hout "</body>~%")
+
+                   (hout "</html>~%"))
+                 "text/html")
+         (values nil nil))))
 
 
 ;;;------------------------------------------------------------------------------------

@@ -42,6 +42,7 @@
    #:*this-tag*
    #:*tag-library-registry*
    #:call-next-tag-method
+   #:tag-name
 
    #:_body
    #:body-of
