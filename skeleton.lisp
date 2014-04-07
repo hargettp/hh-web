@@ -21,19 +21,19 @@
 (in-package :hh-web)
 
 (defclass skeleton ()
-  ((location :type (satisfies directory-pathname-p) 
-	     :initarg :location 
-	     :accessor in-location)
-   (package :type (or symbol string) 
-	    :initarg :package 
-	    :accessor for-package))
+  ((location :type (satisfies directory-pathname-p)
+             :initarg :location
+             :accessor in-location)
+   (package :type (or symbol string)
+            :initarg :package
+            :accessor for-package))
   (:documentation "A skeleton represents the starting point for a project based on hh-web"))
 
 (defgeneric skeleton-components (skeleton)
   (:documentation "Return the list of components of the skeleton, as a list of keywords")
   (:method ((skeleton skeleton))
     `(:directory
-      :system 
+      :system
      :package
      :taglibraries
      :templates
@@ -54,30 +54,30 @@
 
 (defgeneric skeleton-location (skeleton)
   (:method ((skeleton skeleton))
-    (merge-pathnames (make-pathname :directory `(:relative ,(string-downcase (string (for-package skeleton))))) 
-		     (location-pathname (in-location skeleton)))))
+    (merge-pathnames (make-pathname :directory `(:relative ,(string-downcase (string (for-package skeleton)))))
+                     (location-pathname (in-location skeleton)))))
 
 (defmacro with-skeleton-file ((stream skeleton path) &rest body)
-  "Write a string representation of content to the 
+  "Write a string representation of content to the
 location specified path relative to the skeleton's base director"
-  `(with-open-file (,stream (merge-pathnames ,path (skeleton-location ,skeleton)) 
-			    :direction :output
-			    :if-does-not-exist :create)
+  `(with-open-file (,stream (merge-pathnames ,path (skeleton-location ,skeleton))
+                            :direction :output
+                            :if-does-not-exist :create)
      ,@body))
 
 (defun generate-skeleton-file (skeleton path content)
   (declare (type skeleton skeleton)
-	   (type pathname path)
-	   (type content list))
-  (with-open-file (os (merge-pathnames path (skeleton-location skeleton)) 
-		      :direction :output
-		      :if-does-not-exist :create)
+           (type pathname path)
+           (type content list))
+  (with-open-file (os (merge-pathnames path (skeleton-location skeleton))
+                      :direction :output
+                      :if-does-not-exist :create)
     (let ((*print-case* :downcase)
-	  (*package* (find-package :asdf)))
+          (*package* (find-package :asdf)))
       (loop for item in content
-	 do (print item os)
-	 do (pprint-newline :mandatory)
-	 do (pprint-newline :mandatory)))))
+         do (print item os)
+         do (pprint-newline :mandatory)
+         do (pprint-newline :mandatory)))))
 
 (defgeneric generate-skeleton (skeleton)
   (:documentation "Generate all the files necessary for a project using hh-web")
@@ -90,7 +90,7 @@ location specified path relative to the skeleton's base director"
 (defgeneric generate-skeleton-component (skeleton component)
   (:documentation "Generate the files necessary for the indicated component and skeleton"))
 
-(defmethod generate-skeleton-component ((skeleton skeleton) (component symbol)) 
+(defmethod generate-skeleton-component ((skeleton skeleton) (component symbol))
   "If no such component exists for the skeleton, do nothing"
   component)
 
@@ -99,7 +99,7 @@ location specified path relative to the skeleton's base director"
 
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :system)))
   (let* ((package-name (string-downcase (symbol-name (for-package skeleton))))
-	 (system-file-pathname (pathname (format nil "~a.asd" package-name))))
+         (system-file-pathname (pathname (format nil "~a.asd" package-name))))
     (with-skeleton-file (os skeleton system-file-pathname)
       (format os "(defpackage #:~a-asd~%" package-name)
       (format os "  (:use :cl :asdf))~%~%")
@@ -111,7 +111,7 @@ location specified path relative to the skeleton's base director"
       (format os "  :components ((:file \"package\")~%")
       (format os "               (:file \"logs\")~%")
       (format os "               (:file \"templates\")~%")
-      ;; (format os "               (:file \"urls\")~%")
+      (format os "               (:file \"urls\")~%")
       (format os "               (:file \"server\"))~%")
       (format os "  :depends-on (#:log5~%")
       (format os "               (:version #:hh-web \"0.02\")))~%"))))
@@ -254,17 +254,17 @@ location specified path relative to the skeleton's base director"
       (format os "(defvar *log-root* #p\"logs\")~%~%")
       (format os "(defun init-logging()~%")
       (format os "  (log5:start-sender 'http-access-log (rotating-log-sender ~%")
-      (format os "  				       :interval (* 30 60) ;; new log every 30 minutes~%")
-      (format os " 				       :max 5~%")
-      (format os " 				       :location (merge-pathnames \"~a-access.log\" *log-root*))~%" package-name)
-      (format os " 		     :category-spec `(http-access)~%")
-      (format os " 		     :output-spec `(log5:message))~%")
+      (format os "                                     :interval (* 30 60) ;; new log every 30 minutes~%")
+      (format os "                                     :max 5~%")
+      (format os "                                     :location (merge-pathnames \"~a-access.log\" *log-root*))~%" package-name)
+      (format os "                   :category-spec `(http-access)~%")
+      (format os "                   :output-spec `(log5:message))~%")
       (format os "  (log5:start-sender 'http-messages-log (rotating-log-sender ~%")
-      (format os "  				       :interval (* 30 60) ;; new log every 30 minutes~%")
-      (format os " 				       :max 5~%")
-      (format os " 				       :location (merge-pathnames \"~a-messages.log\" *log-root*))~%" package-name)
-      (format os " 		     :category-spec `(http-message)~%")
-      (format os " 		     :output-spec `(log5:message)))~%")
+      (format os "                                     :interval (* 30 60) ;; new log every 30 minutes~%")
+      (format os "                                     :max 5~%")
+      (format os "                                     :location (merge-pathnames \"~a-messages.log\" *log-root*))~%" package-name)
+      (format os "                   :category-spec `(http-message)~%")
+      (format os "                   :output-spec `(log5:message)))~%")
       )))
 
 (defmethod generate-skeleton-component ((skeleton skeleton) (component (eql :urls)))
@@ -307,8 +307,8 @@ location specified path relative to the skeleton's base director"
 
 (defun make-skeleton (&key for in)
   "Generate a skeleton for a package in the indicated location;  "
-  (declare (type (or symbol string) for) 
-	   (type (satisfies cl-fad:directory-pathname-p) in))
+  (declare (type (or symbol string) for)
+           (type (satisfies cl-fad:directory-pathname-p) in))
   (let ((skeleton (make-instance 'skeleton :package for :location in)))
     (generate-skeleton skeleton)
     skeleton))
