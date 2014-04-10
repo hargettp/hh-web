@@ -3,7 +3,7 @@
 (+tag-library :html)
 (+tag-library :script)
 
-(+tag-library :std)
+(+tag-library :ui-theme)
 
 (defhtmltag doc-toc
     :content "")
@@ -171,7 +171,7 @@ a:visited {
 }
 "
     :attributes (package)
-    :content  (std-page
+    :content  (ui-page
 	       ;; (+title "Documentation for $package")
 	       (+title (format nil "Documentation for ~a" package))
 	       (doc-toc)
