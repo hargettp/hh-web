@@ -276,7 +276,7 @@ into a tag object"))
 
 (defun default-tag-attributes ()
   "Return a list of default attributes common to all tags"
-  `(id class style))
+  `(id role class style))
 
 (defmethod tag-attributes ( (*current-tag* htmltag) )
   ;; TODO add attributes for bases
@@ -496,6 +496,13 @@ into a tag object"))
 				  when (and (listp b) (equal '+@ (car b)))
 				  collect b)))))
     (values initializer body)))
+    
+ (defun add-attribute (library-symbol tag-symbol attribute)
+    "Pushes an additional attribute to the tag definition. Sample would be 
+    (add-attribute :HTML 'HTML:DIV HTML::NG-APP"
+    (push attribute (tag-attributes 
+                       (gethash tag-symbol 
+                                (tag-library-tags (tag-library library-symbol))))))   
 
 ;;;------------------------------------------------------------------------------------
 ;;; Macros
@@ -510,6 +517,21 @@ into a tag object"))
 (defmacro +title (expr)
   `(progn
      (setf *page-title* ,expr)
+     nil))
+
+(defmacro +language (expr)
+  `(progn
+     (setf *page-language* ,expr)
+     nil))
+
+(defmacro +doctype (expr)
+  `(progn
+     (setf *page-doctype* ,expr)
+     nil))
+
+(defmacro +charset (expr)
+  `(progn
+     (setf *page-charset* ,expr)
      nil))
 
 (defmacro +link (&key
@@ -716,6 +738,9 @@ into a tag object"))
    "
   `(let ((*page-title* ())
 	 (*page-links* ())
+	 (*page-doctype* ())
+	 (*page-charset* ())
+	 (*page-language* ())
 	 (*page-style-sheets* ())
 	 (*page-styles* ())
 	 (*page-script-libraries* ())
@@ -729,15 +754,23 @@ into a tag object"))
   "Interpret the raw body as html markup, and return a complete HTML page.  In combination with $(a {:href \"_macro_html\"} \"html\"), this macro weaves
    the output of calls to $(em \"html\") into a complete page, with styles, scripts, references to script libraries, a page title, etc., all arranged
    in the appropriate order."
-  `(multiple-value-bind (page-content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts*) 
+  `(multiple-value-bind (page-content *page-title* *page-links* *page-doctype* *page-charset* *page-language* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts*) 
        (html-for-user-agent ,@raw-body)
      ;; now render the page
      (if page-content ;; in case nothing suitable for the desired user agent
          (values (with-output-to-string (*html-out*)
-                   (hout "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">~%")
-                   (hout "<html xmlns=\"http://www.w3.org/1999/xhtml\">~%")
+                   (if *page-doctype*
+                     (hout "<!DOCTYPE ~a>~%" *page-doctype*)
+                     (hout "<!DOCTYPE html>~%"))
+                   (if *page-language*
+                     (hout "<html lang=\"~a\">~%" *page-language*)
+                     (hout "<html lang=\"en\">~%"))
                    (hout "<head>~%")
-
+                   (if *page-charset*
+                     (hout "<meta charset=\"~a\">~%" *page-charset*)
+                     (hout "<meta charset=\"utf-8\">~%"))
+                   (hout "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">")
+                   (hout "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\">")
                    (when *page-title*
                      (hout "<title>~a</title>~%" *page-title*))
 
