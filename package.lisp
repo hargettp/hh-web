@@ -61,6 +61,9 @@
 
    #:+@
    #:+title
+   #:+doctype
+   #:+language
+   #:+charset
    #:+link
 
    #:expansion
