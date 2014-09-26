@@ -113,8 +113,7 @@
 (defhtmltag h5)
 (defhtmltag h6)
 
-(defhtmltag ul
-    :attributes (role))
+(defhtmltag ul)
 
 (defhtmltag ol)
 
