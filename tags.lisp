@@ -276,7 +276,7 @@ into a tag object"))
 
 (defun default-tag-attributes ()
   "Return a list of default attributes common to all tags"
-  `(id role class style))
+  `(id class style))
 
 (defmethod tag-attributes ( (*current-tag* htmltag) )
   ;; TODO add attributes for bases
