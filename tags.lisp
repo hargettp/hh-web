@@ -461,7 +461,7 @@ into a tag object"))
     (format *html-out* ">")))
 
 (defmethod render-tag-attributes ( (*current-tag* htmltag) )
-  (hout "~:{ ~a='~a'~}" 
+  (hout "~:{ ~a=\"~a\"~}" 
 	(loop for attribute in (find-tag-attributes (tag-symbol (tag-definition *current-tag*)))
 	     for value = (tag-attribute-value *current-tag* attribute)
 	     when value 
