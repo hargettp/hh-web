@@ -496,13 +496,7 @@ into a tag object"))
 				  when (and (listp b) (equal '+@ (car b)))
 				  collect b)))))
     (values initializer body)))
-    
- (defun add-attribute (library-symbol tag-symbol attribute)
-    "Pushes an additional attribute to the tag definition. Sample would be 
-    (add-attribute :HTML 'HTML:DIV HTML::NG-APP"
-    (push attribute (tag-attributes 
-                       (gethash tag-symbol 
-                                (tag-library-tags (tag-library library-symbol))))))   
+  
 
 ;;;------------------------------------------------------------------------------------
 ;;; Macros
