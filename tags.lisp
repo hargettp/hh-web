@@ -742,13 +742,13 @@ into a tag object"))
 	 (*page-ready-scripts* ()))
      (let ((content (with-output-to-string (*html-out*)
 		      (render-as-html (tags ,@body) ))))
-       (values content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts*))))
+       (values content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts* *page-doctype* *page-charset* *page-language*))))
 
 (defmacro page (&rest raw-body)
   "Interpret the raw body as html markup, and return a complete HTML page.  In combination with $(a {:href \"_macro_html\"} \"html\"), this macro weaves
    the output of calls to $(em \"html\") into a complete page, with styles, scripts, references to script libraries, a page title, etc., all arranged
    in the appropriate order."
-  `(multiple-value-bind (page-content *page-title* *page-links* *page-doctype* *page-charset* *page-language* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts*) 
+  `(multiple-value-bind (page-content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts* *page-doctype* *page-charset* *page-language*) 
        (html-for-user-agent ,@raw-body)
      ;; now render the page
      (if page-content ;; in case nothing suitable for the desired user agent
