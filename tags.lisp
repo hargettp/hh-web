@@ -91,7 +91,15 @@
 
 (defvar *page-script-libraries* ()
   "A list of strings, each pointing to a script library that the page referneces")
+  
+(defvar *page-doctype* "html"
+  "The doctype of the page") 
 
+(defvar *page-charset* "utf-8"
+  "The charset of the page")
+  
+ (defvar *page-language* "en"
+  "The default language of the page") 
 ;;;------------------------------------------------------------------------------------
 ;;; Types
 ;;;------------------------------------------------------------------------------------
@@ -742,13 +750,13 @@ into a tag object"))
 	 (*page-ready-scripts* ()))
      (let ((content (with-output-to-string (*html-out*)
 		      (render-as-html (tags ,@body) ))))
-       (values content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts* *page-doctype* *page-charset* *page-language*))))
+       (values content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts*))))
 
 (defmacro page (&rest raw-body)
   "Interpret the raw body as html markup, and return a complete HTML page.  In combination with $(a {:href \"_macro_html\"} \"html\"), this macro weaves
    the output of calls to $(em \"html\") into a complete page, with styles, scripts, references to script libraries, a page title, etc., all arranged
    in the appropriate order."
-  `(multiple-value-bind (page-content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts* *page-doctype* *page-charset* *page-language*) 
+  `(multiple-value-bind (page-content *page-title* *page-links* *page-style-sheets* *page-styles* *page-script-libraries* *page-scripts* *page-ready-scripts*) 
        (html-for-user-agent ,@raw-body)
      ;; now render the page
      (if page-content ;; in case nothing suitable for the desired user agent
