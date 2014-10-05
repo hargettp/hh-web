@@ -145,6 +145,7 @@
    ;; Server
    #:create-web-server
    #:run-web-server
+   #:create-ssl-server
 
    ;; Services
    #:with-http-parameters
