@@ -91,7 +91,15 @@
 
 (defvar *page-script-libraries* ()
   "A list of strings, each pointing to a script library that the page referneces")
+  
+(defvar *page-doctype* "html"
+  "The doctype of the page") 
 
+(defvar *page-charset* "utf-8"
+  "The charset of the page")
+  
+ (defvar *page-language* "en"
+  "The default language of the page") 
 ;;;------------------------------------------------------------------------------------
 ;;; Types
 ;;;------------------------------------------------------------------------------------
@@ -461,7 +469,7 @@ into a tag object"))
     (format *html-out* ">")))
 
 (defmethod render-tag-attributes ( (*current-tag* htmltag) )
-  (hout "~:{ ~a='~a'~}" 
+  (hout "~:{ ~a=\"~a\"~}" 
 	(loop for attribute in (find-tag-attributes (tag-symbol (tag-definition *current-tag*)))
 	     for value = (tag-attribute-value *current-tag* attribute)
 	     when value 
@@ -496,6 +504,7 @@ into a tag object"))
 				  when (and (listp b) (equal '+@ (car b)))
 				  collect b)))))
     (values initializer body)))
+  
 
 ;;;------------------------------------------------------------------------------------
 ;;; Macros
@@ -510,6 +519,21 @@ into a tag object"))
 (defmacro +title (expr)
   `(progn
      (setf *page-title* ,expr)
+     nil))
+
+(defmacro +language (expr)
+  `(progn
+     (setf *page-language* ,expr)
+     nil))
+
+(defmacro +doctype (expr)
+  `(progn
+     (setf *page-doctype* ,expr)
+     nil))
+
+(defmacro +charset (expr)
+  `(progn
+     (setf *page-charset* ,expr)
      nil))
 
 (defmacro +link (&key
@@ -716,6 +740,9 @@ into a tag object"))
    "
   `(let ((*page-title* ())
 	 (*page-links* ())
+	 (*page-doctype* ())
+	 (*page-charset* ())
+	 (*page-language* ())
 	 (*page-style-sheets* ())
 	 (*page-styles* ())
 	 (*page-script-libraries* ())
@@ -734,10 +761,18 @@ into a tag object"))
      ;; now render the page
      (if page-content ;; in case nothing suitable for the desired user agent
          (values (with-output-to-string (*html-out*)
-                   (hout "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">~%")
-                   (hout "<html xmlns=\"http://www.w3.org/1999/xhtml\">~%")
+                   (if *page-doctype*
+                     (hout "<!DOCTYPE ~a>~%" *page-doctype*)
+                     (hout "<!DOCTYPE html>~%"))
+                   (if *page-language*
+                     (hout "<html lang=\"~a\">~%" *page-language*)
+                     (hout "<html lang=\"en\">~%"))
                    (hout "<head>~%")
-
+                   (if *page-charset*
+                     (hout "<meta charset=\"~a\">~%" *page-charset*)
+                     (hout "<meta charset=\"utf-8\">~%"))
+                   (hout "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">")
+                   (hout "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\">")
                    (when *page-title*
                      (hout "<title>~a</title>~%" *page-title*))
 
