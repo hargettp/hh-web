@@ -1,17 +1,17 @@
-#About HH-Web#
+# About HH-Web
 
 HH-Web is the beginnings of a web application framework written in Lisp designed to streamline development of modern web applications.
 
 See the LICENSE file for the license covering all code within the HH-Web directory and any subdirectories.  
 Basically, it's the MIT license, so you are free to do what you want, provided you reproduce the original copyright.
 
-##Platforms##
+## Platforms
 
 The primary platform for HH-Web development is SBCL x64 on Mac OS X Lion (latest SBCL rev tested is 1.0.57); other Common Lisp implementations that appear to work correctly are CCL 1.8 x86, LispWorks 6.01, and ABCL 1.0.1.  HH-Web has also been tested with SBCL 1.0.57 x64 on Ubuntu 11.04.
 
 Platforms with known issues include CCL x64 (problem with threads) and CMUCL (which does not like named-readtables).
 
-##Features##
+## Features
 
 In its present form (as of June 2012), there are 4 principal features in HH-Web:
 
@@ -23,7 +23,7 @@ In its present form (as of June 2012), there are 4 principal features in HH-Web:
 
   * **Integrated caching**: HH-Web's support for caching is evolving, but in its current form it permits marking caching guidelines for specific URLs.  Specifically, caching causes HH-Web to preseve any generated content (from templates and tags, typically) in an in-memory cache for later use.  If a request for a page in its map appear again, then HH-Web will serve the content from the cache, rather than invoking code to regenerate the content fresh.  
 
-##Getting Started##
+## Getting Started
 
 As an aide to starting new projects that use HH-Web to structure web application development, you can load the HH-Web system into the REPL using [Quicklisp](http://quicklisp.org) (included as of 7/3/2012--thanks [Zach](http://xach.com)!):
 
